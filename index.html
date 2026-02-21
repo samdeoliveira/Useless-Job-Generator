@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Useless Job Generator | 🤡</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤡</text></svg>">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Space+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        :root {
+            --neon-blue: #00f2ff;
+            --hot-pink: #ff007a;
+            --void: #0a0a0b;
+            --money: #39ff14;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--void);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(0, 242, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 122, 0.05) 0%, transparent 40%);
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; margin: 0; padding: 20px;
+        }
+
+        .container {
+            width: 100%; max-width: 600px;
+            background: rgba(20, 20, 25, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px; padding: 40px;
+            text-align: center; backdrop-filter: blur(12px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+      h1 {
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 900;
+    font-size: clamp(1.8rem, 5vw, 2.8rem); 
+    margin: 0;
+    background: linear-gradient(to right, var(--neon-blue), var(--hot-pink));
+    
+    /* Versão oficial para navegadores modernos */
+    background-clip: text; 
+    
+    /* Versão para Chrome/Safari/Edge antigos */
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent;
+}
+
+        .badge {
+            display: inline-block; padding: 4px 12px; border-radius: 50px;
+            font-size: 0.7rem; font-weight: bold; text-transform: uppercase;
+            margin-bottom: 15px; background: var(--hot-pink); color: white;
+            display: none;
+        }
+
+        .job-card {
+            background: #000; border-radius: 16px; padding: 25px;
+            margin: 20px 0; border-left: 6px solid var(--hot-pink);
+            text-align: left; display: none;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .job-title { color: var(--neon-blue); font-size: 1.4rem; font-weight: bold; margin-bottom: 5px; }
+        .salary { color: var(--money); font-weight: bold; margin-bottom: 10px; font-size: 1rem; }
+        .scope { color: #ccc; font-style: italic; border-top: 1px solid #222; padding-top: 15px; }
+
+        button {
+            width: 100%; padding: 18px; background: var(--hot-pink);
+            color: #fff; border: none; border-radius: 12px;
+            font-family: 'Montserrat', sans-serif; font-weight: 900;
+            font-size: 1.1rem; cursor: pointer; transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        button:disabled { background: #333; filter: grayscale(1); cursor: not-allowed; }
+
+        #timer { font-size: 0.8rem; color: #555; margin-top: 10px; min-height: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="jobBadge" class="badge"></div>
+        <h1>Useless Job Generator</h1>
+        <p style="color: #666; margin-bottom: 25px;">Gerando empregos que sua mãe não saberia explicar.</p>
+
+        <div id="jobCard" class="job-card">
+            <div id="title" class="job-title"></div>
+            <div id="salary" class="salary"></div>
+            <div id="scope" class="scope"></div>
+        </div>
+
+        <button id="genBtn" onclick="generateJob()">Promover Minha Carreira 🤡</button>
+        <div id="timer"></div>
+    </div>
+
+    <script>
+        // WEB AUDIO API - Som de festa sintetizado
+        function playPartySound() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(150, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.1);
+            
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start();
+            osc.stop(ctx.currentTime + 0.4);
+        }
+
+        const data = {
+            niveis: ["Czar de", "Ninja Sênior de", "Evangelista Quântico de", "Diretor de Melancolia em", "Mago do", "Facilitador de Pânico em", "Scrum Master Astral de", "Head de Microgerenciamento em", "Analista de Desculpas em", "Sócio-Cúmplice de", "Xamã Corporativo de", "Sumo Sacerdote de", "Agente do Caos em", "Líder Supremo de Humildade Fake em", "Ghostwriter de LinkedIn de"],
+            areas: ["Vibes", "Ego dos Sócios", "PowerPoint Animado", "Escalabilidade de Nada", "Sinergia de Elevador", "Fluxo de Ócio", "Resiliência a Reuniões", "Mindset de Pamonha", "Engajamento Fantasma", "Otimização de Desespero", "Compliance de Memes", "Felicidade Compulsória", "Procrastinação Ágil", "Autoajuda Tóxica", "Vazio Existencial S/A"],
+            adjetivos: ["Interdimensional", "Tóxica", "Disruptiva", "Líquida", "Pós-Verdade", "Gourmet", "Subliminar", "Holística", "Unicórnio-Driven", "Ancestral", "Low-Code", "Metafísica", "Cringe", "Beta-Tester", "Full-Stack"],
+            verbos: ["Hackear", "Pivotar", "Otimizar", "Escalar", "Alinhar", "Reenquadrar", "Garantir", "Microgerenciar", "Transcender", "Sincronizar", "Maquiar"],
+            objetos: ["a ansiedade do estagiário", "o café frio da copa", "as reuniões de 4 horas", "o vazio existencial do CEO", "o estoque de Stock Options", "o burnout coletivo", "as figurinhas do WhatsApp da firma", "o ego do Product Manager", "planilhas de Excel com vida própria", "a sanidade dos desenvolvedores"],
+            complementos: ["com tabelas que brilham no escuro", "através de meditação agressiva", "usando jargões em inglês", "enquanto o prédio pega fogo", "em troca de uma pizza na sexta", "via Bluetooth espiritual", "usando apenas IA e café", "sem orçamento e sem esperança"],
+            beneficios: ["Gympass para a alma", "Vale-Terapia (10 min)", "Fruta grátis (só banana)", "Bônus em aplausos", "Day-off de 15 minutos", "Direito a não sorrir"],
+            badges: ["100% Burnout Garantido", "Vaga Arrombada Premium", "Candidato de Vidro", "Futuro Desempregado", "Escravo do Slack", "Queridinho do RH"]
+        };
+
+        function generateJob() {
+            const btn = document.getElementById('genBtn');
+            const timerDiv = document.getElementById('timer');
+            const card = document.getElementById('jobCard');
+            const badge = document.getElementById('jobBadge');
+            const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+            playPartySound();
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#00f2ff', '#ff007a', '#39ff14'] });
+
+            // Conteúdo
+            badge.innerText = getRandom(data.badges);
+            badge.style.display = 'inline-block';
+            document.getElementById('title').innerText = `${getRandom(data.niveis)} ${getRandom(data.areas)} ${getRandom(data.adjetivos)}`;
+            document.getElementById('salary').innerText = `💰 R$ ${(Math.random() * 95 + 5).toFixed(3)},00 + ${getRandom(data.beneficios)}`;
+            document.getElementById('scope').innerText = `Missão: ${getRandom(data.verbos)} ${getRandom(data.objetos)} ${getRandom(data.complementos)}.`;
+            
+            card.style.display = 'block';
+
+            // Timeout 2s
+            btn.disabled = true;
+            let timeLeft = 2;
+            const frasesEspera = ["Falsificando currículo...", "Limpando o histórico...", "Pedindo demissão...", "Sendo demitido..."];
+            
+            const countdown = setInterval(() => {
+                btn.innerText = getRandom(frasesEspera);
+                timerDiv.innerText = `Próximo erro na carreira em ${timeLeft}s...`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    btn.disabled = false;
+                    btn.innerText = "Promover Minha Carreira 🤡";
+                    timerDiv.innerText = "";
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
